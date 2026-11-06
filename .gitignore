@@ -1,0 +1,7 @@
+.buildResult/
+*.wgt
+.DS_Store
+.impeccable/
+__pycache__/
+tvs.json
+js/local.js

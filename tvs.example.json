@@ -1,0 +1,41 @@
+{
+  "app_id": "HMScrnOffc.Home",
+  "signing_profile": "your-samsung-profile",
+  "tvs": [
+    {
+      "name": "Living Room TV",
+      "host": "192.168.1.50",
+      "model": "UE50MU6120",
+      "year": 2017,
+      "tizen": "3.0",
+      "enabled": true,
+      "notes": "Developer mode Host PC IP must match the deploying computer."
+    }
+  ],
+  "local": {
+    "place": {
+      "name": "London",
+      "latitude": 51.5074,
+      "longitude": -0.1278
+    },
+    "privateCode": "",
+    "privateHide": [],
+    "startApp": "",
+    "apps": [
+      {
+        "id": "live-tv",
+        "launchId": "org.tizen.tv-viewer",
+        "name": "Live TV",
+        "icon": "tv",
+        "colour": "#1a3b8f",
+        "hint": "Live channels open from the TV itself. Press Source or the Home button on your remote."
+      },
+      {
+        "id": "111299001912",
+        "name": "YouTube",
+        "icon": "ytbadge",
+        "colour": "#c4302b"
+      }
+    ]
+  }
+}

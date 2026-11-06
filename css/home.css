@@ -1,0 +1,833 @@
+/* Written for the 2017 M47 engine: no CSS Grid, custom properties,
+   backdrop-filter or flexbox gap. Animate only transform and opacity. */
+
+@font-face { font-family: "Hanken Grotesk"; font-weight: 300; src: url("../fonts/hanken-grotesk-300.woff") format("woff"); }
+@font-face { font-family: "Hanken Grotesk"; font-weight: 400; src: url("../fonts/hanken-grotesk-400.woff") format("woff"); }
+@font-face { font-family: "Hanken Grotesk"; font-weight: 500; src: url("../fonts/hanken-grotesk-500.woff") format("woff"); }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: #060b1c;
+    color: #fff;
+    font-family: "Hanken Grotesk", "SamsungOne", Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    cursor: none;
+}
+
+/* ---------- Scene ---------- */
+
+.sky, .layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+}
+.sky {
+    opacity: 0;
+    -webkit-transition: opacity 4s linear;
+    transition: opacity 4s linear;
+    will-change: opacity;
+}
+.sky.is-showing { opacity: 1; }
+
+/* Time-of-day photos inside a very slow push-in, so the scene breathes. */
+.photos {
+    -webkit-transform-origin: 62% 56%;
+    transform-origin: 62% 56%;
+    -webkit-animation: push-in 40s ease-in-out infinite alternate;
+    animation: push-in 40s ease-in-out infinite alternate;
+    will-change: transform;
+}
+@-webkit-keyframes push-in { from { -webkit-transform: scale(1); } to { -webkit-transform: scale(1.09) translate3d(-34px, -14px, 0); } }
+@keyframes push-in { from { transform: scale(1); } to { transform: scale(1.09) translate3d(-34px, -14px, 0); } }
+.photo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+    background-size: cover;
+    background-position: center;
+}
+.photo-top {
+    opacity: 0;
+    -webkit-transition: opacity 30s linear;
+    transition: opacity 30s linear;
+}
+
+/* Drifting clouds: a copy of the photo's sky, masked to the sky only, moving
+   slowly sideways over the still landscape. */
+.skydrift {
+    position: absolute;
+    left: -60px;
+    top: 0;
+    width: 2040px;
+    height: 470px;
+    z-index: 2;
+    background-repeat: no-repeat;
+    background-size: 1920px 1080px;
+    background-position: 60px 0;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 62%, rgba(0, 0, 0, 0) 96%);
+    -webkit-animation: sky-drift 90s ease-in-out infinite alternate;
+    animation: sky-drift 90s ease-in-out infinite alternate;
+    -webkit-transition: opacity 0.6s linear;
+    transition: opacity 0.6s linear;
+}
+@-webkit-keyframes sky-drift { from { -webkit-transform: translate3d(0, 0, 0); } to { -webkit-transform: translate3d(-56px, 0, 0); } }
+@keyframes sky-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-56px, 0, 0); } }
+
+/* Preview layers for exploring the day: two, so each step cross-fades. */
+.preview {
+    opacity: 0;
+    -webkit-transition: opacity 1.4s ease-in-out;
+    transition: opacity 1.4s ease-in-out;
+}
+.preview.is-shown { opacity: 1; }
+.preview { display: none; }
+.is-exploring .preview { display: block; }
+.preview.is-front { z-index: 2; }
+.preview { z-index: 1; }
+
+/* Stars at night, in two groups that twinkle out of step. */
+.stars {
+    opacity: 0;
+    -webkit-transition: opacity 4s linear;
+    transition: opacity 4s linear;
+}
+.tw0 { -webkit-animation: twinkle 2.3s ease-in-out infinite alternate; animation: twinkle 2.3s ease-in-out infinite alternate; -webkit-animation-delay: -0.4s; animation-delay: -0.4s; }
+.tw1 { -webkit-animation: twinkle 3.1s ease-in-out infinite alternate; animation: twinkle 3.1s ease-in-out infinite alternate; -webkit-animation-delay: -1.7s; animation-delay: -1.7s; }
+.tw2 { -webkit-animation: twinkle 4.2s ease-in-out infinite alternate; animation: twinkle 4.2s ease-in-out infinite alternate; -webkit-animation-delay: -0.9s; animation-delay: -0.9s; }
+.tw3 { -webkit-animation: twinkle 2.7s ease-in-out infinite alternate; animation: twinkle 2.7s ease-in-out infinite alternate; -webkit-animation-delay: -2.2s; animation-delay: -2.2s; }
+.tw4 { -webkit-animation: twinkle 5.4s ease-in-out infinite alternate; animation: twinkle 5.4s ease-in-out infinite alternate; -webkit-animation-delay: -3.1s; animation-delay: -3.1s; }
+.tw5 { -webkit-animation: twinkle 3.7s ease-in-out infinite alternate; animation: twinkle 3.7s ease-in-out infinite alternate; -webkit-animation-delay: -0.2s; animation-delay: -0.2s; }
+@-webkit-keyframes twinkle { from { opacity: 0.2; } to { opacity: 1; } }
+@keyframes twinkle { from { opacity: 0.2; } to { opacity: 1; } }
+
+/* Per-scene effects, set by js/scene.js for whichever time of day is shown. */
+.fx {
+    position: absolute;
+    z-index: 3;
+    opacity: 0;
+    -webkit-transition: opacity 4s linear;
+    transition: opacity 4s linear;
+}
+/* Glow over the sun or moon, breathing slowly. */
+.fx-sun {
+    border-radius: 50%;
+    -webkit-animation: breathe 16s ease-in-out infinite alternate;
+    animation: breathe 16s ease-in-out infinite alternate;
+}
+/* Light glinting on the lake. */
+.fx-glint {
+    left: 1170px;
+    top: 800px;
+    width: 280px;
+    height: 36px;
+}
+.g {
+    position: absolute;
+    height: 6px;
+    border-radius: 50%;
+    -webkit-animation: glint 1.7s ease-in-out infinite alternate;
+    animation: glint 1.7s ease-in-out infinite alternate;
+}
+@-webkit-keyframes glint { 0% { opacity: 0.05; -webkit-transform: translate3d(0, 0, 0) scaleX(0.7); } 50% { opacity: 1; } 100% { opacity: 0.15; -webkit-transform: translate3d(8px, 0, 0) scaleX(1.1); } }
+@keyframes glint { 0% { opacity: 0.05; transform: translate3d(0, 0, 0) scaleX(0.7); } 50% { opacity: 1; } 100% { opacity: 0.15; transform: translate3d(8px, 0, 0) scaleX(1.1); } }
+/* A soft cloud shadow sliding across the hills on bright days. */
+.fx-shadow {
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+}
+.fx-shadow-core {
+    position: absolute;
+    left: -1200px;
+    top: 640px;
+    width: 1200px;
+    height: 520px;
+    background: radial-gradient(ellipse at center, rgba(4, 12, 20, 0.5) 0%, rgba(4, 12, 20, 0) 70%);
+    -webkit-animation: shadow-drift 55s linear infinite;
+    animation: shadow-drift 55s linear infinite;
+}
+@-webkit-keyframes shadow-drift { from { -webkit-transform: translate3d(0, 0, 0); } to { -webkit-transform: translate3d(3300px, -60px, 0); } }
+@keyframes shadow-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(3300px, -60px, 0); } }
+
+/* Fog: soft wisps placed over the valleys where the photos have fog,
+   drifting sideways and thickening and thinning slowly. */
+.fog {
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+}
+.wisp {
+    position: absolute;
+    border-radius: 50%;
+    -webkit-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-direction: alternate;
+    animation-direction: alternate;
+}
+.wisp-a { -webkit-animation-name: wisp-a; animation-name: wisp-a; }
+.wisp-b { -webkit-animation-name: wisp-b; animation-name: wisp-b; }
+@-webkit-keyframes wisp-a { from { opacity: 0.55; -webkit-transform: translate3d(-90px, 0, 0) scale(1, 1); } to { opacity: 1; -webkit-transform: translate3d(110px, -8px, 0) scale(1.12, 1.2); } }
+@keyframes wisp-a { from { opacity: 0.55; transform: translate3d(-90px, 0, 0) scale(1, 1); } to { opacity: 1; transform: translate3d(110px, -8px, 0) scale(1.12, 1.2); } }
+@-webkit-keyframes wisp-b { from { opacity: 1; -webkit-transform: translate3d(100px, 0, 0) scale(1.1, 1.15); } to { opacity: 0.5; -webkit-transform: translate3d(-100px, 6px, 0) scale(1, 1); } }
+@keyframes wisp-b { from { opacity: 1; transform: translate3d(100px, 0, 0) scale(1.1, 1.15); } to { opacity: 0.5; transform: translate3d(-100px, 6px, 0) scale(1, 1); } }
+
+/* Distant birds and shooting stars, launched now and then by js/scene.js. */
+.life {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+    z-index: 3;
+    overflow: hidden;
+}
+.flock {
+    position: absolute;
+    left: 0;
+    -webkit-transition-property: -webkit-transform;
+    transition-property: transform;
+    -webkit-transition-timing-function: linear;
+    transition-timing-function: linear;
+}
+.bird {
+    position: absolute;
+    -webkit-animation: bob 2.6s ease-in-out infinite alternate;
+    animation: bob 2.6s ease-in-out infinite alternate;
+}
+@-webkit-keyframes bob { from { -webkit-transform: translate3d(0, -4px, 0); } to { -webkit-transform: translate3d(3px, 5px, 0); } }
+@keyframes bob { from { transform: translate3d(0, -4px, 0); } to { transform: translate3d(3px, 5px, 0); } }
+
+@-webkit-keyframes breathe { from { opacity: 0.45; } to { opacity: 1; } }
+@keyframes breathe { from { opacity: 0.45; } to { opacity: 1; } }
+
+/* Floating motes of light: drift up and sideways, fading in and out,
+   staggered so plenty are already moving on the first frame. */
+.motes { overflow: hidden; }
+.mote {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    -webkit-animation-name: float-up;
+    animation-name: float-up;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+}
+@-webkit-keyframes float-up {
+    0%   { opacity: 0; -webkit-transform: translate3d(0, 0, 0); }
+    15%  { opacity: 0.9; }
+    80%  { opacity: 0.7; }
+    100% { opacity: 0; -webkit-transform: translate3d(70px, -320px, 0); }
+}
+@keyframes float-up {
+    0%   { opacity: 0; transform: translate3d(0, 0, 0); }
+    15%  { opacity: 0.9; }
+    80%  { opacity: 0.7; }
+    100% { opacity: 0; transform: translate3d(70px, -320px, 0); }
+}
+
+/* Meteors: a streak that brightens and fades as it travels; a bright head. */
+.meteor {
+    position: absolute;
+    -webkit-transform-origin: left center;
+    transform-origin: left center;
+}
+.meteor-streak {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, rgba(200, 220, 255, 0) 0%, rgba(215, 230, 255, 0.35) 55%, rgba(245, 250, 255, 0.95) 100%);
+    -webkit-animation-name: meteor;
+    animation-name: meteor;
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+}
+.meteor-streak i {
+    position: absolute;
+    right: -3px;
+    top: -2px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 8px 2px rgba(220, 235, 255, 0.85);
+}
+@-webkit-keyframes meteor { 0% { opacity: 0; -webkit-transform: translate3d(0, 0, 0) scaleX(0.3); } 15% { opacity: 1; } 70% { opacity: 0.9; } 100% { opacity: 0; -webkit-transform: translate3d(460px, 0, 0) scaleX(1); } }
+@keyframes meteor { 0% { opacity: 0; transform: translate3d(0, 0, 0) scaleX(0.3); } 15% { opacity: 1; } 70% { opacity: 0.9; } 100% { opacity: 0; transform: translate3d(460px, 0, 0) scaleX(1); } }
+
+/* Night aircraft: double white strobe and a slower red beacon. Satellites: a steady dim dot. */
+.skylight {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    -webkit-transition-property: -webkit-transform;
+    transition-property: transform;
+    -webkit-transition-timing-function: linear;
+    transition-timing-function: linear;
+}
+.skylight .strobe, .skylight .beacon {
+    position: absolute;
+    border-radius: 50%;
+}
+.skylight .strobe {
+    left: 0; top: 0; width: 4px; height: 4px;
+    background: #fff;
+    box-shadow: 0 0 7px 2px rgba(255, 255, 255, 0.9);
+    -webkit-animation: strobe2 1.3s linear infinite;
+    animation: strobe2 1.3s linear infinite;
+}
+.skylight .beacon {
+    left: 7px; top: 2px; width: 3px; height: 3px;
+    background: #ff3b3b;
+    box-shadow: 0 0 6px rgba(255, 60, 60, 0.9);
+    -webkit-animation: beacon 1.9s linear infinite;
+    animation: beacon 1.9s linear infinite;
+}
+.satellite {
+    border-radius: 50%;
+    width: 3px;
+    height: 3px;
+    background: rgba(235, 240, 255, 0.8);
+    box-shadow: 0 0 4px rgba(235, 240, 255, 0.6);
+}
+@-webkit-keyframes strobe2 { 0% { opacity: 1; } 6% { opacity: 0.05; } 14% { opacity: 1; } 20% { opacity: 0.05; } 100% { opacity: 0.05; } }
+@keyframes strobe2 { 0% { opacity: 1; } 6% { opacity: 0.05; } 14% { opacity: 1; } 20% { opacity: 0.05; } 100% { opacity: 0.05; } }
+@-webkit-keyframes beacon { 0% { opacity: 0.15; } 45% { opacity: 1; } 60% { opacity: 0.15; } 100% { opacity: 0.15; } }
+@keyframes beacon { 0% { opacity: 0.15; } 45% { opacity: 1; } 60% { opacity: 0.15; } 100% { opacity: 0.15; } }
+
+/* A high jet by day with its contrail growing behind it. */
+.jet {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    -webkit-transition-property: -webkit-transform;
+    transition-property: transform;
+    -webkit-transition-timing-function: linear;
+    transition-timing-function: linear;
+}
+.jet-body {
+    position: absolute;
+    left: 0; top: 0; width: 3px; height: 3px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+}
+.jet-trail {
+    position: absolute;
+    right: 3px;
+    top: 0;
+    width: 560px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.28) 55%, rgba(255, 255, 255, 0.75) 100%);
+    -webkit-transform-origin: right center;
+    transform-origin: right center;
+    -webkit-animation: contrail 24s ease-out forwards;
+    animation: contrail 24s ease-out forwards;
+}
+.jet.is-rtl .jet-trail {
+    right: auto;
+    left: 3px;
+    background: linear-gradient(270deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.28) 55%, rgba(255, 255, 255, 0.75) 100%);
+    -webkit-transform-origin: left center;
+    transform-origin: left center;
+}
+@-webkit-keyframes contrail { from { -webkit-transform: scaleX(0); } to { -webkit-transform: scaleX(1); } }
+@keyframes contrail { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* A rare, faint aurora low in the night sky. */
+.aurora-glow {
+    position: absolute;
+    left: 520px;
+    top: 120px;
+    width: 1400px;
+    height: 380px;
+    opacity: 0;
+    -webkit-animation: aurora-life 90s ease-in-out forwards;
+    animation: aurora-life 90s ease-in-out forwards;
+}
+.aurora-glow .band {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(90, 255, 180, 0) 0%, rgba(90, 255, 180, 0.18) 55%, rgba(120, 200, 255, 0.05) 80%, rgba(120, 200, 255, 0) 100%);
+    -webkit-animation: aurora-wave 14s ease-in-out infinite alternate;
+    animation: aurora-wave 14s ease-in-out infinite alternate;
+}
+.aurora-glow .b1 { top: 0;    height: 300px; }
+.aurora-glow .b2 { top: 50px; height: 260px; -webkit-animation-duration: 19s; animation-duration: 19s; -webkit-animation-delay: -6s; animation-delay: -6s; }
+.aurora-glow .b3 { top: 90px; height: 220px; -webkit-animation-duration: 11s; animation-duration: 11s; -webkit-animation-delay: -3s; animation-delay: -3s; }
+@-webkit-keyframes aurora-life { 0% { opacity: 0; } 20% { opacity: 0.85; } 75% { opacity: 0.85; } 100% { opacity: 0; } }
+@keyframes aurora-life { 0% { opacity: 0; } 20% { opacity: 0.85; } 75% { opacity: 0.85; } 100% { opacity: 0; } }
+@-webkit-keyframes aurora-wave { from { -webkit-transform: translate3d(-40px, 0, 0) skewX(-10deg) scaleY(0.9); } to { -webkit-transform: translate3d(50px, 8px, 0) skewX(8deg) scaleY(1.1); } }
+@keyframes aurora-wave { from { transform: translate3d(-40px, 0, 0) skewX(-10deg) scaleY(0.9); } to { transform: translate3d(50px, 8px, 0) skewX(8deg) scaleY(1.1); } }
+
+/* Light rays fanning out from a low sun, each slowly strengthening and fading. */
+.fx-rays {
+    width: 0;
+    height: 0;
+}
+.ray {
+    position: absolute;
+    left: 0;
+    top: -60px;
+    width: 1500px;
+    height: 120px;
+    -webkit-transform-origin: left center;
+    transform-origin: left center;
+    -webkit-animation: ray 11s ease-in-out infinite alternate;
+    animation: ray 11s ease-in-out infinite alternate;
+}
+.ray.r1 { height: 70px;  top: -35px; -webkit-animation-duration: 15s; animation-duration: 15s; -webkit-animation-delay: -4s; animation-delay: -4s; }
+.ray.r2 { height: 160px; top: -80px; -webkit-animation-duration: 9s;  animation-duration: 9s;  -webkit-animation-delay: -7s; animation-delay: -7s; }
+.ray.r3 { height: 90px;  top: -45px; -webkit-animation-duration: 13s; animation-duration: 13s; -webkit-animation-delay: -2s; animation-delay: -2s; }
+.ray.r4 { height: 130px; top: -65px; -webkit-animation-duration: 17s; animation-duration: 17s; -webkit-animation-delay: -9s; animation-delay: -9s; }
+.ray.r5 { height: 60px;  top: -30px; -webkit-animation-duration: 12s; animation-duration: 12s; -webkit-animation-delay: -5s; animation-delay: -5s; }
+@-webkit-keyframes ray { from { opacity: 0.15; } to { opacity: 1; } }
+@keyframes ray { from { opacity: 0.15; } to { opacity: 1; } }
+
+/* Grey wash on overcast days. */
+.wash {
+    background: rgba(62, 70, 84, 0.16);
+    opacity: 0;
+    -webkit-transition: opacity 6s linear;
+    transition: opacity 6s linear;
+}
+.is-overcast .wash { opacity: 1; }
+
+/* Keeps white text readable over bright skies: darker on the left behind
+   the list, lightly on the right behind the clock. */
+.shade {
+    background: linear-gradient(90deg, rgba(4, 7, 16, 0.6) 0%, rgba(4, 7, 16, 0.32) 38%, rgba(4, 7, 16, 0.12) 52%, rgba(4, 7, 16, 0.3) 100%);
+}
+
+.topscrim {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 300px;
+    background: linear-gradient(180deg, rgba(6, 10, 22, 0.45) 0%, rgba(6, 10, 22, 0) 100%);
+}
+
+.arcs {
+    -webkit-animation: shimmer 9s ease-in-out infinite alternate;
+    animation: shimmer 9s ease-in-out infinite alternate;
+}
+@-webkit-keyframes shimmer { from { opacity: 0.55; } to { opacity: 1; } }
+@keyframes shimmer { from { opacity: 0.55; } to { opacity: 1; } }
+
+/* ---------- Content ---------- */
+
+#home {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+    opacity: 0;
+    /* The long transform transition powers the slow anti-burn-in drift. */
+    -webkit-transition: opacity 600ms ease-out, -webkit-transform 40s linear;
+    transition: opacity 600ms ease-out, transform 40s linear;
+}
+#home.is-ready { opacity: 1; }
+
+/* App list, left column. */
+.applist {
+    position: absolute;
+    left: 124px;
+    top: 330px;
+    width: 740px;
+    height: 430px;
+}
+.pill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 740px;
+    height: 136px;
+    border-radius: 26px;
+    background: linear-gradient(180deg, rgba(122, 152, 235, 0.36) 0%, rgba(58, 86, 168, 0.24) 100%);
+    border: 2px solid rgba(168, 196, 255, 0.72);
+    box-shadow: 0 0 46px rgba(86, 136, 255, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    -webkit-transition: -webkit-transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: transform;
+}
+/* A bright highlight along the top edge, like light catching glass. */
+.pill::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: 18%;
+    right: 18%;
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, rgba(220, 235, 255, 0) 0%, rgba(235, 244, 255, 0.95) 50%, rgba(220, 235, 255, 0) 100%);
+}
+.app-item {
+    position: absolute;
+    left: 0;
+    width: 740px;
+    height: 136px;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    padding-left: 64px;
+    opacity: 0.86;
+    -webkit-transition: opacity 250ms ease-out;
+    transition: opacity 250ms ease-out;
+}
+.app-item.is-active { opacity: 1; }
+.app-item-icon {
+    width: 80px;
+    height: 80px;
+    margin-right: 50px;
+    color: #fff;
+    -webkit-flex: 0 0 80px;
+    flex: 0 0 80px;
+}
+.app-item-icon svg { width: 80px; height: 80px; display: block; }
+.icon-film { color: #c9cdd8; }
+.app-item-name {
+    font-size: 54px;
+    font-weight: 400;
+    letter-spacing: 0.005em;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* When focus moves down to the inputs, the list's highlight steps aside. */
+.applist.is-away .pill { opacity: 0; }
+.pill { -webkit-transition: -webkit-transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 250ms linear; transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 250ms linear; }
+
+/* The selected item breathes: a brighter ring and glow fade in and out.
+   Opacity only, so it stays smooth on the TV. */
+.pill::after, .input-box.is-active::after {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 32px;
+    border: 2px solid rgba(200, 222, 255, 0.95);
+    box-shadow: 0 0 44px rgba(110, 160, 255, 0.65), inset 0 0 22px rgba(150, 190, 255, 0.35);
+    -webkit-animation: select-pulse 1.8s ease-in-out infinite alternate;
+    animation: select-pulse 1.8s ease-in-out infinite alternate;
+}
+.input-box.is-active { position: relative; }
+.input-box.is-active::after { border-radius: 26px; }
+.applist.is-away .pill::after { -webkit-animation: none; animation: none; opacity: 0; }
+@-webkit-keyframes select-pulse { from { opacity: 0.1; } to { opacity: 1; } }
+@keyframes select-pulse { from { opacity: 0.1; } to { opacity: 1; } }
+
+/* The TV Menu box under the list. */
+.inputs {
+    position: absolute;
+    left: 124px;
+    top: 820px;
+    display: -webkit-flex;
+    display: flex;
+}
+.input-box {
+    width: auto;
+    padding-right: 34px;
+    height: 92px;
+    margin-right: 22px;
+    border-radius: 20px;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    padding-left: 26px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    opacity: 0.8;
+    -webkit-transition: -webkit-transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 220ms linear;
+    transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 220ms linear;
+}
+.input-box.is-active {
+    opacity: 1;
+    background: linear-gradient(180deg, rgba(122, 152, 235, 0.38) 0%, rgba(58, 86, 168, 0.26) 100%);
+    border-color: rgba(168, 196, 255, 0.8);
+    box-shadow: 0 0 34px rgba(86, 136, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    -webkit-transform: scale(1.06);
+    transform: scale(1.06);
+}
+.input-icon { width: 44px; height: 44px; margin-right: 18px; color: #fff; }
+.input-icon svg { width: 44px; height: 44px; display: block; }
+.input-label {
+    font-size: 34px;
+    font-weight: 500;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* Hairline between the columns, fading at both ends. */
+.divider {
+    position: absolute;
+    left: 940px;
+    top: 280px;
+    width: 1px;
+    height: 560px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.32) 30%, rgba(255, 255, 255, 0.32) 70%, rgba(255, 255, 255, 0) 100%);
+}
+
+/* Time, date and weather, right column, centred. */
+.nowpanel {
+    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.4);
+    position: absolute;
+    left: 990px;
+    top: 545px;
+    width: 760px;
+    text-align: center;
+    -webkit-transform: translate3d(0, -50%, 0);
+    transform: translate3d(0, -50%, 0);
+}
+.greeting {
+    font-size: 40px;
+    font-weight: 400;
+    opacity: 0.82;
+    letter-spacing: 0.01em;
+}
+.time {
+    font-size: 168px;
+    line-height: 0.92;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 30px rgba(0, 0, 0, 0.25);
+}
+.date {
+    margin-top: 20px;
+    font-size: 48px;
+    font-weight: 400;
+    text-shadow: 0 1px 16px rgba(0, 0, 0, 0.45);
+}
+.rule {
+    width: 158px;
+    height: 2px;
+    margin: 46px auto 42px;
+    background: #fff;
+    opacity: 0.45;
+}
+.current {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.place {
+    font-size: 30px;
+    opacity: 0.78;
+    margin-right: 62px;
+}
+.wx-glyph {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    color: #fff;
+    margin-right: 18px;
+}
+.wx-glyph svg { width: 50px; height: 50px; display: block; }
+.temperature {
+    font-size: 42px;
+    line-height: 1;
+    font-weight: 400;
+}
+.condition {
+    font-size: 40px;
+    margin-left: 18px;
+}
+.forecast {
+    margin-top: 32px;
+    font-size: 32px;
+    opacity: 0.86;
+}
+.day { margin: 0 20px; }
+.day-name { margin-right: 8px; }
+
+.status {
+    position: absolute;
+    left: 124px;
+    bottom: 56px;
+    font-size: 28px;
+    max-width: 1000px;
+    opacity: 0;
+    -webkit-transition: opacity 200ms linear;
+    transition: opacity 200ms linear;
+}
+.status.is-showing { opacity: 0.92; }
+
+.hint {
+    position: absolute;
+    right: 56px;
+    bottom: 44px;
+    font-size: 22px;
+    opacity: 0.32;
+}
+
+/* Explore indicator: the time of day being shown, and where live is. */
+.explore {
+    position: absolute;
+    left: 50%;
+    bottom: 64px;
+    width: 420px;
+    margin-left: -210px;
+    text-align: center;
+    opacity: 0;
+    -webkit-transform: translate3d(0, 12px, 0);
+    transform: translate3d(0, 12px, 0);
+    -webkit-transition: opacity 400ms ease-out, -webkit-transform 400ms ease-out;
+    transition: opacity 400ms ease-out, transform 400ms ease-out;
+}
+.explore.is-showing {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+}
+.explore-label {
+    font-size: 36px;
+    font-weight: 500;
+    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.5);
+}
+.explore-dots { margin-top: 18px; }
+.dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin: 0 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.35);
+    -webkit-transition: -webkit-transform 300ms ease-out, background 300ms ease-out;
+    transition: transform 300ms ease-out, background 300ms ease-out;
+}
+.dot.is-live { box-shadow: 0 0 0 3px rgba(168, 196, 255, 0.7); }
+.dot.is-current {
+    background: #fff;
+    -webkit-transform: scale(1.4);
+    transform: scale(1.4);
+}
+
+/* Idle dimmer, for panel care. */
+.dim {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+    background: #000;
+    opacity: 0;
+    -webkit-transition: opacity 2s linear;
+    transition: opacity 2s linear;
+}
+.dim.is-dim { opacity: 0.5; }
+
+/* Parts the settings can hide. */
+.no-date .date, .no-weather .rule, .no-weather .weather, .no-forecast .forecast { display: none; }
+.no-date.no-weather .time { margin-bottom: 0; }
+.ampm { font-size: 0.34em; font-weight: 400; margin-left: 0.18em; letter-spacing: 0; }
+.calm .mote { display: none; }
+
+/* ---------- Settings overlay ---------- */
+
+.settings {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+    background: rgba(3, 6, 14, 0.74);
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: opacity 240ms ease-out;
+    transition: opacity 240ms ease-out;
+}
+.settings.is-open { opacity: 1; visibility: visible; }
+.settings-card {
+    position: absolute;
+    top: 46px;
+    left: 510px;
+    width: 900px;
+    padding: 34px 56px 30px;
+    background: rgba(16, 20, 34, 0.96);
+    border-radius: 30px;
+    border: 1px solid rgba(168, 196, 255, 0.25);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+.settings-title {
+    font-size: 42px;
+    font-weight: 500;
+    margin-bottom: 14px;
+}
+.set-row {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    -webkit-align-items: center;
+    align-items: center;
+    padding: 8px 22px;
+    font-size: 30px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+}
+.set-row.is-focused {
+    background: rgba(122, 152, 235, 0.22);
+    border-color: rgba(168, 196, 255, 0.6);
+}
+.set-value { opacity: 0.6; }
+.set-value.is-on { color: #86d3a3; opacity: 0.95; }
+.set-value.is-choice { opacity: 0.9; color: #bcd2ff; }
+.set-section {
+    margin: 14px 22px 4px;
+    font-size: 24px;
+    opacity: 0.5;
+}
+.set-input {
+    display: none;
+    width: 100%;
+    margin-top: 20px;
+    padding: 22px 24px;
+    font-size: 40px;
+    font-family: inherit;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 14px;
+    outline: none;
+}
+.set-input.is-editing { display: block; }
+.settings-foot {
+    margin-top: 20px;
+    font-size: 24px;
+    opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skydrift, .wisp, .bird, .ray, .aurora-glow .band, .tw0, .tw1, .tw2, .tw3, .tw4, .tw5, .arcs, .photos, .stars-a, .stars-b, .fx-sun, .g, .fx-shadow-core, .mote { -webkit-animation: none; animation: none; }
+    .sky, #home, .pill, .app-item, .status, .dim, .settings {
+        -webkit-transition: none;
+        transition: none;
+    }
+}

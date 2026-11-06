@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1920, user-scalable=no">
+    <title>Home</title>
+    <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+    <!-- Scene, back to front: solar sky (fallback), time-of-day photos, stars,
+         sun shimmer, drifting mist, overcast wash and legibility shade. -->
+    <div id="sky-a" class="sky"></div>
+    <div id="sky-b" class="sky"></div>
+    <div class="layer photos">
+        <div id="photo-base" class="photo"></div>
+        <div id="photo-top" class="photo photo-top"></div>
+        <div id="preview-a" class="photo preview"></div>
+        <div id="preview-b" class="photo preview"></div>
+        <div id="skydrift" class="skydrift"></div>
+        <div id="fx-shadow" class="fx fx-shadow"><div class="fx-shadow-core"></div></div>
+        <div id="fx-sun" class="fx fx-sun"></div>
+        <div id="fx-rays" class="fx fx-rays"><span class="ray r0"></span><span class="ray r1"></span><span class="ray r2"></span><span class="ray r3"></span><span class="ray r4"></span><span class="ray r5"></span></div>
+        <div id="fog" class="fx fog"><div class="wisp wisp-a" style="left:375px;top:575px;width:1400px;height:80px;-webkit-animation-duration:90s;animation-duration:90s;-webkit-animation-delay:-21s;animation-delay:-53s"></div><div class="wisp wisp-b" style="left:350px;top:545px;width:1100px;height:60px;-webkit-animation-duration:120s;animation-duration:120s;-webkit-animation-delay:-88s;animation-delay:-53s"></div><div class="wisp wisp-b" style="left:-50px;top:655px;width:1400px;height:100px;-webkit-animation-duration:70s;animation-duration:70s;-webkit-animation-delay:-36s;animation-delay:-61s"></div><div class="wisp wisp-a" style="left:300px;top:760px;width:1600px;height:120px;-webkit-animation-duration:62s;animation-duration:62s;-webkit-animation-delay:-53s;animation-delay:-13s"></div><div class="wisp wisp-b" style="left:1100px;top:885px;width:1000px;height:120px;-webkit-animation-duration:54s;animation-duration:54s;-webkit-animation-delay:-50s;animation-delay:-30s"></div><div class="wisp wisp-a" style="left:-80px;top:740px;width:800px;height:100px;-webkit-animation-duration:58s;animation-duration:58s;-webkit-animation-delay:-51s;animation-delay:-32s"></div><div class="wisp wisp-a" style="left:1050px;top:645px;width:900px;height:90px;-webkit-animation-duration:78s;animation-duration:78s;-webkit-animation-delay:-23s;animation-delay:-64s"></div><div class="wisp wisp-b" style="left:700px;top:840px;width:1100px;height:100px;-webkit-animation-duration:66s;animation-duration:66s;-webkit-animation-delay:-30s;animation-delay:-0s"></div></div>
+        <div id="life" class="life"></div>
+        <div id="fx-glint" class="fx fx-glint">
+            <span class="g" style="left:207px;top:33px;width:29px;-webkit-animation-duration:1.2s;animation-duration:1.2s;-webkit-animation-delay:-2.8s;animation-delay:-2.8s"></span><span class="g" style="left:116px;top:9px;width:63px;-webkit-animation-duration:1.9s;animation-duration:1.9s;-webkit-animation-delay:-0.4s;animation-delay:-0.4s"></span><span class="g" style="left:186px;top:14px;width:53px;-webkit-animation-duration:2.4s;animation-duration:2.4s;-webkit-animation-delay:-2.8s;animation-delay:-2.8s"></span><span class="g" style="left:124px;top:8px;width:39px;-webkit-animation-duration:2.3s;animation-duration:2.3s;-webkit-animation-delay:-1.3s;animation-delay:-1.3s"></span><span class="g" style="left:170px;top:5px;width:58px;-webkit-animation-duration:2.8s;animation-duration:2.8s;-webkit-animation-delay:-2.3s;animation-delay:-2.3s"></span><span class="g" style="left:221px;top:30px;width:43px;-webkit-animation-duration:1.9s;animation-duration:1.9s;-webkit-animation-delay:-1.3s;animation-delay:-1.3s"></span><span class="g" style="left:19px;top:28px;width:40px;-webkit-animation-duration:2.7s;animation-duration:2.7s;-webkit-animation-delay:-1.6s;animation-delay:-1.6s"></span><span class="g" style="left:53px;top:25px;width:90px;-webkit-animation-duration:2.3s;animation-duration:2.3s;-webkit-animation-delay:-1.9s;animation-delay:-1.9s"></span><span class="g" style="left:205px;top:32px;width:70px;-webkit-animation-duration:2.7s;animation-duration:2.7s;-webkit-animation-delay:-0.1s;animation-delay:-0.1s"></span><span class="g" style="left:193px;top:34px;width:76px;-webkit-animation-duration:2.4s;animation-duration:2.4s;-webkit-animation-delay:-0.3s;animation-delay:-0.3s"></span>
+        </div>
+    </div>
+    <svg id="stars" class="layer stars" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+        <g class="tw tw0" fill="#ffffff"><circle cx="1837" cy="307" r="1.0"/><circle cx="992" cy="207" r="1.2"/><circle cx="989" cy="39" r="1.2"/><circle cx="1747" cy="142" r="1.2"/><circle cx="1527" cy="382" r="2.3"/><circle cx="516" cy="81" r="2.3"/><circle cx="915" cy="412" r="1.0"/><circle cx="1455" cy="268" r="0.8"/><circle cx="635" cy="159" r="1.2"/><circle cx="144" cy="125" r="0.8"/><circle cx="1293" cy="345" r="1.0"/><circle cx="768" cy="390" r="2.3"/><circle cx="787" cy="328" r="1.2"/><circle cx="1659" cy="332" r="1.5"/><circle cx="15" cy="288" r="1.0"/><circle cx="1177" cy="420" r="2.3"/><circle cx="1349" cy="308" r="1.0"/><circle cx="610" cy="337" r="0.8"/><circle cx="1414" cy="109" r="1.8"/><circle cx="1090" cy="334" r="1.0"/></g>
+        <g class="tw tw1" fill="#f4f7ff"><circle cx="1147" cy="253" r="1.8"/><circle cx="1247" cy="173" r="1.0"/><circle cx="709" cy="400" r="1.2"/><circle cx="211" cy="96" r="1.0"/><circle cx="1591" cy="229" r="1.5"/><circle cx="142" cy="183" r="1.0"/><circle cx="434" cy="439" r="1.5"/><circle cx="1190" cy="254" r="1.2"/><circle cx="1094" cy="311" r="1.2"/><circle cx="862" cy="141" r="1.8"/><circle cx="1776" cy="70" r="1.2"/><circle cx="1011" cy="122" r="1.0"/><circle cx="85" cy="135" r="1.8"/><circle cx="1262" cy="427" r="1.5"/><circle cx="1354" cy="232" r="0.8"/><circle cx="789" cy="177" r="2.3"/><circle cx="1283" cy="333" r="1.2"/><circle cx="1258" cy="205" r="0.8"/><circle cx="340" cy="370" r="1.8"/><circle cx="520" cy="88" r="1.2"/><circle cx="1244" cy="235" r="2.3"/><circle cx="1831" cy="11" r="1.5"/><circle cx="1721" cy="35" r="1.2"/><circle cx="854" cy="216" r="1.2"/><circle cx="892" cy="436" r="1.2"/><circle cx="1391" cy="419" r="1.5"/><circle cx="552" cy="190" r="0.8"/><circle cx="1394" cy="414" r="1.8"/><circle cx="1102" cy="138" r="1.8"/><circle cx="664" cy="433" r="1.2"/></g>
+        <g class="tw tw2" fill="#dfe8ff"><circle cx="698" cy="84" r="1.8"/><circle cx="747" cy="241" r="1.8"/><circle cx="1371" cy="97" r="1.5"/><circle cx="1879" cy="93" r="0.8"/><circle cx="1403" cy="74" r="0.8"/><circle cx="982" cy="98" r="2.3"/><circle cx="985" cy="265" r="1.8"/><circle cx="1191" cy="358" r="1.2"/><circle cx="385" cy="120" r="0.8"/><circle cx="632" cy="107" r="2.3"/><circle cx="552" cy="88" r="1.5"/><circle cx="201" cy="357" r="1.2"/><circle cx="76" cy="309" r="2.3"/><circle cx="66" cy="63" r="1.2"/></g>
+        <g class="tw tw3" fill="#fff6e8"><circle cx="1466" cy="263" r="0.8"/><circle cx="1399" cy="28" r="1.2"/><circle cx="859" cy="137" r="1.0"/><circle cx="1805" cy="198" r="1.8"/><circle cx="1573" cy="379" r="0.8"/><circle cx="273" cy="82" r="1.0"/><circle cx="622" cy="285" r="1.5"/><circle cx="793" cy="247" r="1.0"/><circle cx="1272" cy="20" r="2.3"/><circle cx="1059" cy="272" r="1.8"/><circle cx="874" cy="243" r="1.2"/><circle cx="1468" cy="319" r="1.2"/><circle cx="640" cy="113" r="1.2"/><circle cx="776" cy="90" r="1.8"/><circle cx="153" cy="266" r="0.8"/><circle cx="122" cy="264" r="2.3"/><circle cx="1453" cy="198" r="2.3"/></g>
+        <g class="tw tw4" fill="#ffffff"><circle cx="143" cy="291" r="1.2"/><circle cx="506" cy="135" r="1.0"/><circle cx="1215" cy="176" r="1.2"/><circle cx="1524" cy="291" r="0.8"/><circle cx="633" cy="381" r="1.2"/><circle cx="1644" cy="291" r="2.3"/><circle cx="201" cy="289" r="0.8"/><circle cx="1218" cy="386" r="1.5"/><circle cx="150" cy="330" r="2.3"/><circle cx="1467" cy="84" r="1.0"/><circle cx="359" cy="50" r="1.2"/><circle cx="167" cy="24" r="1.5"/><circle cx="822" cy="233" r="2.3"/><circle cx="276" cy="302" r="1.8"/><circle cx="1368" cy="44" r="1.0"/><circle cx="1029" cy="30" r="1.5"/></g>
+        <g class="tw tw5" fill="#e8f0ff"><circle cx="1708" cy="57" r="1.0"/><circle cx="1005" cy="269" r="1.8"/><circle cx="141" cy="234" r="1.8"/><circle cx="192" cy="105" r="0.8"/><circle cx="376" cy="203" r="1.2"/><circle cx="1564" cy="300" r="1.0"/><circle cx="477" cy="139" r="1.5"/><circle cx="727" cy="43" r="1.5"/><circle cx="860" cy="65" r="1.0"/><circle cx="564" cy="370" r="1.8"/><circle cx="1389" cy="181" r="1.5"/><circle cx="1224" cy="362" r="1.2"/><circle cx="1363" cy="153" r="1.0"/></g>
+    </svg>
+    <div id="motes" class="layer motes"><span class="mote" style="left:1780px;top:465px;width:12px;height:12px;-webkit-animation-duration:24s;animation-duration:24s;-webkit-animation-delay:-27s;animation-delay:-27s"></span><span class="mote" style="left:1509px;top:640px;width:12px;height:12px;-webkit-animation-duration:23s;animation-duration:23s;-webkit-animation-delay:-16s;animation-delay:-16s"></span><span class="mote" style="left:705px;top:615px;width:14px;height:14px;-webkit-animation-duration:19s;animation-duration:19s;-webkit-animation-delay:-5s;animation-delay:-5s"></span><span class="mote" style="left:1110px;top:675px;width:14px;height:14px;-webkit-animation-duration:23s;animation-duration:23s;-webkit-animation-delay:-20s;animation-delay:-20s"></span><span class="mote" style="left:120px;top:451px;width:14px;height:14px;-webkit-animation-duration:28s;animation-duration:28s;-webkit-animation-delay:-5s;animation-delay:-5s"></span><span class="mote" style="left:1213px;top:490px;width:6px;height:6px;-webkit-animation-duration:23s;animation-duration:23s;-webkit-animation-delay:-9s;animation-delay:-9s"></span><span class="mote" style="left:880px;top:490px;width:8px;height:8px;-webkit-animation-duration:17s;animation-duration:17s;-webkit-animation-delay:-17s;animation-delay:-17s"></span><span class="mote" style="left:1793px;top:677px;width:6px;height:6px;-webkit-animation-duration:25s;animation-duration:25s;-webkit-animation-delay:-12s;animation-delay:-12s"></span><span class="mote" style="left:851px;top:448px;width:12px;height:12px;-webkit-animation-duration:26s;animation-duration:26s;-webkit-animation-delay:-23s;animation-delay:-23s"></span><span class="mote" style="left:94px;top:380px;width:14px;height:14px;-webkit-animation-duration:26s;animation-duration:26s;-webkit-animation-delay:-5s;animation-delay:-5s"></span><span class="mote" style="left:497px;top:594px;width:14px;height:14px;-webkit-animation-duration:16s;animation-duration:16s;-webkit-animation-delay:-26s;animation-delay:-26s"></span><span class="mote" style="left:167px;top:861px;width:14px;height:14px;-webkit-animation-duration:17s;animation-duration:17s;-webkit-animation-delay:-1s;animation-delay:-1s"></span><span class="mote" style="left:828px;top:786px;width:6px;height:6px;-webkit-animation-duration:19s;animation-duration:19s;-webkit-animation-delay:-7s;animation-delay:-7s"></span><span class="mote" style="left:919px;top:454px;width:14px;height:14px;-webkit-animation-duration:16s;animation-duration:16s;-webkit-animation-delay:-24s;animation-delay:-24s"></span><span class="mote" style="left:1219px;top:583px;width:12px;height:12px;-webkit-animation-duration:21s;animation-duration:21s;-webkit-animation-delay:-14s;animation-delay:-14s"></span><span class="mote" style="left:1654px;top:656px;width:14px;height:14px;-webkit-animation-duration:19s;animation-duration:19s;-webkit-animation-delay:-16s;animation-delay:-16s"></span><span class="mote" style="left:749px;top:469px;width:8px;height:8px;-webkit-animation-duration:26s;animation-duration:26s;-webkit-animation-delay:-9s;animation-delay:-9s"></span><span class="mote" style="left:697px;top:720px;width:12px;height:12px;-webkit-animation-duration:16s;animation-duration:16s;-webkit-animation-delay:-21s;animation-delay:-21s"></span><span class="mote" style="left:91px;top:799px;width:6px;height:6px;-webkit-animation-duration:23s;animation-duration:23s;-webkit-animation-delay:-20s;animation-delay:-20s"></span><span class="mote" style="left:1612px;top:500px;width:10px;height:10px;-webkit-animation-duration:22s;animation-duration:22s;-webkit-animation-delay:-17s;animation-delay:-17s"></span></div>
+    <div class="layer wash"></div>
+    <div class="layer shade"></div>
+    <div class="topscrim"></div>
+
+    <!-- Thin light arcs, top-left and bottom-left. -->
+    <svg class="layer arcs" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+        <defs>
+            <linearGradient id="arc-top" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+                <stop offset="0.6" stop-color="#bcd2ff" stop-opacity="0.9"/>
+                <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="arc-bottom" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+                <stop offset="0.4" stop-color="#d6e2ff" stop-opacity="0.7"/>
+                <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+            </linearGradient>
+        </defs>
+        <path d="M-20 300 C 160 200, 330 90, 540 -20" fill="none" stroke="url(#arc-top)" stroke-width="10" opacity="0.18"/>
+        <path d="M-20 300 C 160 200, 330 90, 540 -20" fill="none" stroke="url(#arc-top)" stroke-width="2.4"/>
+        <path d="M60 770 C 420 760, 820 900, 1180 1100" fill="none" stroke="url(#arc-bottom)" stroke-width="8" opacity="0.14"/>
+        <path d="M60 770 C 420 760, 820 900, 1180 1100" fill="none" stroke="url(#arc-bottom)" stroke-width="2"/>
+    </svg>
+
+    <main id="home">
+        <nav id="applist" class="applist"></nav>
+        <div id="inputs" class="inputs"></div>
+        <div class="divider"></div>
+
+        <section class="nowpanel">
+            <div id="time" class="time"></div>
+            <div id="date" class="date"></div>
+            <div class="rule"></div>
+            <div id="weather" class="weather">
+                <div class="current">
+                    <span id="place" class="place"></span>
+                    <span id="wx-glyph" class="wx-glyph"></span>
+                    <span id="temperature" class="temperature"></span>
+                    <span id="condition" class="condition"></span>
+                </div>
+                <div id="forecast" class="forecast"></div>
+            </div>
+        </section>
+
+        <div id="status" class="status"></div>
+        <div class="hint">Left and Right to explore the day, Return for settings</div>
+        <div id="explore" class="explore">
+            <div id="explore-label" class="explore-label"></div>
+            <div id="explore-dots" class="explore-dots"></div>
+        </div>
+    </main>
+
+    <div id="dim" class="dim"></div>
+
+    <div id="settings" class="settings">
+        <div class="settings-card">
+            <div class="settings-title">Settings</div>
+            <div id="set-rows" class="set-rows"></div>
+            <input id="set-loc-input" class="set-input" type="text" placeholder="Enter a postcode" autocomplete="off">
+            <div class="settings-foot">Up and Down to move. Left, Right or Enter to change. On an app, Enter shows or hides it and Left and Right reorder. Return to close.</div>
+        </div>
+    </div>
+
+    <!-- js/local.js is written by tools/deploy.py from tvs.json and is not tracked by git -->
+    <script src="js/local.js"></script>
+    <script src="js/apps.js"></script>
+    <script src="js/glyphs.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/sound.js"></script>
+    <script src="js/sky.js"></script>
+    <script src="js/scene.js"></script>
+    <script src="js/clock.js"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/launcher.js"></script>
+    <script src="js/list.js"></script>
+    <script src="js/inputs.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/lock.js"></script>
+    <script src="js/idle.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
